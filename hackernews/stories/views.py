@@ -2,10 +2,9 @@ import datetime
 
 from django.shortcuts import render
 
-from django.template import loader, Context
+from django.shortcuts import render_to_response
 from stories.models import Story
 from django.utils.timezone import utc
-from django.http import HttpResponse
 
 def score(story, gravity=1.8, timebase=120):
 	# Calculate the points for the story
@@ -28,10 +27,4 @@ def top_stories(top=180, consider=1000):
 def index(request):
 	# Get a list of all the top stories and store them in the stories var
 	stories = top_stories(top=30)
-	# Use the django.template loader module to load in the template 
-	template = loader.get_template("stories/index.html")
-	# Create the context for the template - i.e variables associated
-	context = Context({'stories': stories})
-	# Render the template out - passing in the context
-	response = template.render(context)
-	return HttpResponse(response)
+	return render_to_response('stories/index.html', {'stories': stories})
