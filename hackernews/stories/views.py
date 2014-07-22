@@ -1,8 +1,8 @@
 import datetime
 
-from django.shortcuts import render
 
-from django.shortcuts import render_to_response
+
+from django.shortcuts import render
 from stories.models import Story
 from django.utils.timezone import utc
 
@@ -12,7 +12,6 @@ def score(story, gravity=1.8, timebase=120):
 	# Figure out the age of the story
 	now = datetime.datetime.utcnow().replace(tzinfo=utc)
 	age = int((now - story.created_at).total_seconds())/60
-
 	return points/(age+timebase)**1.8
 
 def top_stories(top=180, consider=1000):
@@ -27,4 +26,4 @@ def top_stories(top=180, consider=1000):
 def index(request):
 	# Get a list of all the top stories and store them in the stories var
 	stories = top_stories(top=30)
-	return render_to_response('stories/index.html', {'stories': stories})
+	return render(request, 'stories/index.html', {'stories': stories})
