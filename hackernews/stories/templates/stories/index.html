@@ -1,0 +1,12 @@
+<html>
+<head>
+	<title>Tuts News</title>
+</head>
+<body>
+	<ol>
+		{% for story in stories %}
+			<li>{{ story.title }}</li>
+		{% endfor %}
+	</ol>
+</body>
+</html>
