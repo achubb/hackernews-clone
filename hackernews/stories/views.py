@@ -1,10 +1,11 @@
 import datetime
 
-
-
 from django.shortcuts import render
-from stories.models import Story
+from django.http import HttpResponseRedirect
 from django.utils.timezone import utc
+
+from stories.models import Story
+from stories.forms import StoryForm
 
 def score(story, gravity=1.8, timebase=120):
 	# Calculate the points for the story
@@ -27,3 +28,16 @@ def index(request):
 	# Get a list of all the top stories and store them in the stories var
 	stories = top_stories(top=30)
 	return render(request, 'stories/index.html', {'stories': stories})
+
+def story(request):
+	# Check to see if the form has been posted or not
+	if request.method == 'POST':
+		# Create a bound form object by passing the posted data through. 
+		form = StoryForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect('/')
+	else :
+		# Otherwise just create an unbound form - creates the HTML for the form and sends that back
+		form = StoryForm()
+	return render(request, 'stories/story.html', {'form': form})
