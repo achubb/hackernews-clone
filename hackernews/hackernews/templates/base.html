@@ -9,6 +9,15 @@
 			<div id="site-logo">
 				N
 			</div>
+			{% if user.is_authenticated %}
+				<div id="user-info">
+					{{ user.username }} | <a href="/story/">Submit</a> | <a href="/logout/">logout</a>
+				</div>
+			{% else %}
+				<div id="user-info">
+					<a href="/login/">Login</a>
+				</div>
+			{% endif %}
 			<div id="site-title">
 				<h1>Tuts News</h1>
 			</div>
