@@ -7,7 +7,8 @@ class Story(models.Model):
 	title = models.CharField(max_length=200)
 	url = models.URLField()
 	points = models.IntegerField(default=1)
-	moderator = models.ForeignKey(User)# Pointer to Users Table
+	moderator = models.ForeignKey(User, related_name='moderated_stories')# Pointer to Users Table
+	voters = models.ManyToManyField(User, related_name='liked_stories')
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 

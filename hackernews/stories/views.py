@@ -1,7 +1,7 @@
 import datetime
 
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect, HttpResponse
 from django.utils.timezone import utc
 from django.contrib.auth.decorators import login_required
 
@@ -28,9 +28,14 @@ def top_stories(top=180, consider=1000):
 def index(request):
 	# Get a list of all the top stories and store them in the stories var
 	stories = top_stories(top=30)
+	if request.user.is_authenticated():
+		liked_stories = request.user.liked_stories.filter(id__in=[story.id for story in stories])
+	else:
+		liked_stories = []
 	return render(request, 'stories/index.html', {
 		'stories': stories,
-		'user': request.user
+		'user': request.user,
+		'liked_stories': liked_stories,
 	})
 
 @login_required
@@ -48,3 +53,13 @@ def story(request):
 		# Otherwise just create an unbound form - creates the HTML for the form and sends that back
 		form = StoryForm()
 	return render(request, 'stories/story.html', {'form': form})
+
+@login_required
+def vote(request):
+	story = get_object_or_404(Story, pk=request.POST.get('story'))
+	story.points += 1
+	story.save()
+	user = request.user
+	user.liked_stories.add(story)
+	user.save()
+	return HttpResponse()
